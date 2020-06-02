@@ -7,6 +7,9 @@ class AppColor {
   static const Color secondary = Color(0xFFFF880E);
   static const Color secondaryVariant = Color(0xFFF28665);
 
+  static const Color blue = Color.fromRGBO(0, 102, 179, 1);//0066b3
+  static const Color ligthBlue = Color.fromRGBO(145, 181, 221, 1);
+
   // main text colors
   static const Color slightGrey = Color(0xFFE1E1E1);
   static const Color coolGrey = Color(0xFF9EA0A5);
