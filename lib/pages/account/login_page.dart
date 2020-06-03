@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/widgets/common/wave_clipper.dart';
 
 import '../../blocs/login_bloc.dart';
-import '../../data/constants/ui_helpers.dart';
-import '../../pages/home/home_page.dart';
-import '../../widgets/common/busy_button.dart';
-import '../../widgets/common/text_link.dart';
+import '../../tabbar_control.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -41,74 +39,194 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 150,
-                child: Image.asset('assets/images/title.png'),
+        body: ListView(
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                ClipPath(
+                  clipper: WaveClipper2(),
+                  child: Container(
+                    child: Column(),
+                    width: double.infinity,
+                    height: 300,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [Color(0x22ff3a5a), Color(0x22fe494d)])),
+                  ),
+                ),
+                ClipPath(
+                  clipper: WaveClipper3(),
+                  child: Container(
+                    child: Column(),
+                    width: double.infinity,
+                    height: 300,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [Color(0x44ff3a5a), Color(0x44fe494d)])),
+                  ),
+                ),
+                ClipPath(
+                  clipper: WaveClipper1(),
+                  child: Container(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: 40,
+                        ),
+                        Icon(
+                          Icons.fastfood,
+                          color: Colors.white,
+                          size: 60,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'Your Logo',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 30),
+                        ),
+                      ],
+                    ),
+                    width: double.infinity,
+                    height: 300,
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [Color(0xffff3a5a), Color(0xfffe494d)])),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32),
+              child: Material(
+                elevation: 2.0,
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                child: StreamBuilder<String>(
+                    stream: loginBloc.emailStream,
+                    builder: (context, snapshot) {
+                      return TextFormField(
+                          controller: emailController,
+                          decoration: InputDecoration(
+                              labelText: 'Email',
+                              prefixIcon: Material(
+                                elevation: 0,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)),
+                                child: Icon(
+                                  Icons.email,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 25, vertical: 13),
+                              errorText: snapshot.data));
+                    }),
               ),
-              StreamBuilder<String>(
-                  stream: loginBloc.emailStream,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32),
+              child: Material(
+                elevation: 2.0,
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                child: StreamBuilder<String>(
+                  stream: loginBloc.passStream,
                   builder: (context, snapshot) {
                     return TextFormField(
-                        //InputField
-                        // placeholder: 'Email',
-                        controller: emailController,
-                        decoration: InputDecoration(
-                            icon: Icon(Icons.email), labelText: 'Email', errorText: snapshot.data));
-                  }),
-              verticalSpaceSmall,
-              StreamBuilder<String>(
-                stream: loginBloc.passStream,
-                builder: (context, snapshot) {
-                  return TextFormField(
-                    obscureText: true,
-                    controller: passwordController,
-                    decoration: InputDecoration(
-                        icon: Icon(Icons.lock), labelText: 'Password *', errorText: snapshot.data),
-                  );
-                },
+                      obscureText: true,
+                      controller: passwordController,
+                      decoration: InputDecoration(
+                          labelText: 'Password *',
+                          prefixIcon: Material(
+                            elevation: 0,
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            child: Icon(
+                              Icons.lock,
+                              color: Colors.red,
+                            ),
+                          ),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                              horizontal: 25, vertical: 13),
+                          errorText: snapshot.data),
+                    );
+                  },
+                ),
               ),
-              verticalSpaceMedium,
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  StreamBuilder<bool>(
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: 32),
+                child: StreamBuilder<bool>(
                     stream: loginBloc.btnStream,
                     builder: (context, snapshot) {
-                      return BusyButton(
-                        title: 'Login',
-                        busy: false,// snapshot.data == true /*model.busy*/,
-                        onPressed: snapshot.data == true ? () {
-                          //print('BusyButton click');
-                          // model.login(
-                          //   email: emailController.text,
-                          //   password: passwordController.text,
-                          // );
-                          Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute<dynamic>(
-                                          builder: (context) => HomePage()));
-                        } : null,
-                      );
-                    }
-                  )
-                ],
+                      return Container(
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              color: snapshot.data == true
+                                  ? Color(0xffff3a5a) : Colors.grey),
+                          child: FlatButton(
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18),
+                              ),
+                              onPressed: snapshot.data == true
+                                  ? () {
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute<dynamic>(builder: (context) => TabBarControl()));
+                                  }
+                                  : null));
+                    })),
+            SizedBox(
+              height: 20,
+            ),
+            Center(
+              child: Text(
+                'FORGOT PASSWORD ?',
+                style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700),
               ),
-              verticalSpaceMedium,
-              TextLink(
-                'Create an Account if you\'re new.',
-                onPressed: () {
-                  //model.navigateToSignUp();
-                },
-              )
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 40,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  """
+Don't have an Account ? """,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal),
+                ),
+                Text('Sign Up ',
+                    style: TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        decoration: TextDecoration.underline)),
+              ],
+            )
+          ],
         ));
   }
 }

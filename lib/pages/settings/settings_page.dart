@@ -86,7 +86,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ListTile(
                     title: Text('Sign out'),
                       leading: Image.asset('assets/icons/sign_out.png'),
-                    onTap: () => Navigator.of(context).push<dynamic>(
+                    onTap: () => Navigator.of(context).pushReplacement(
                         MaterialPageRoute<dynamic>(builder: (_) => LoginPage())),
                   ),
                   

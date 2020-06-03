@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:flutter_template/data/constants/assets.dart';
+import 'package:flutter_template/data/constants/assets.dart' as assets;
+import 'package:flutter_template/widgets/common/network_image.dart';
 import 'package:flutter_template/widgets/common/wave_clipper.dart';
 
 import '../../data/constants/colors.dart';
-import '../../pages/category/category_list_page.dart';
 import '../../pages/notification/notifications_page.dart';
-import '../../pages/search/search_page.dart';
-import '../../pages/settings/settings_page.dart';
-import '../../pages/shop/check_out_page.dart';
-import '../../widgets/common/choice_chip.dart';
 import '../../widgets/viewmodels/city_card.dart';
-import 'components/custom_bottom_bar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -47,38 +41,483 @@ class _HomePageState extends State<HomePage>
         '440'),
   ];
 
+  final List<String> flashSaleImages = [
+    assets.backgroundImages[0],
+    assets.backgroundImages[2],
+    assets.backgroundImages[1]
+  ];
+
   final List<String> images = [
-    breakfast,
-    fishtail,
-    pancake,
-    fewalake,
-    fries,
+    assets.breakfast,
+    assets.fishtail,
+    assets.pancake,
+    assets.fewalake,
+    assets.fries,
   ];
 
   final ScrollController _scrollController = ScrollController();
   Color appBarBackground;
   double topPosition;
+  double scrollOffset = 400; //130
+  double heightHeader = 100;
   bool isflightSelected = true;
 
   double _getOpacity() {
-    double op = (topPosition + 80) / 80;
+    final double op = (topPosition + heightHeader) / heightHeader;
     return op > 1 || op < 0 ? 1 : op;
   }
 
   dynamic _onScroll() {
-    if (_scrollController.offset > 50) {
+    if (_scrollController.offset > 350) {
+      //50
       if (topPosition < 0)
         setState(() {
-          topPosition = -130 + _scrollController.offset;
-          if (_scrollController.offset > 130) topPosition = 0;
+          topPosition = -scrollOffset + _scrollController.offset;
+          if (_scrollController.offset > scrollOffset) topPosition = 0;
         });
     } else {
-      if (topPosition > -80)
+      if (topPosition > -heightHeader)
         setState(() {
           topPosition--;
-          if (_scrollController.offset <= 0) topPosition = -80;
+          if (_scrollController.offset <= 0) topPosition = -heightHeader;
         });
     }
+  }
+
+  Widget _buildHeader() {
+    return Center(
+        child: Container(
+      height: heightHeader,
+      child: Stack(
+        children: <Widget>[
+          Container(
+            height: 65,
+            padding: const EdgeInsets.only(left: 50, top: 25.0, right: 20.0),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30.0),
+                  bottomRight: Radius.circular(30.0)),
+              color: AppColor.orange.withOpacity(_getOpacity()), // Colors.white
+            ),
+            child: Column(),
+          ),
+          Positioned.fill(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Card(
+                    child: Container(
+                        width: 280,
+                        height: 75,
+                        padding: const EdgeInsets.all(10),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  CircleAvatar(
+                                    backgroundColor: Colors.blue,
+                                    maxRadius: 15.0,
+                                    child: Icon(
+                                      Icons.home,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Text('DarazMall')
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  CircleAvatar(
+                                    backgroundColor: Colors.blue,
+                                    maxRadius: 15.0,
+                                    child: Icon(
+                                      Icons.home,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Text('Flash Sales')
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  CircleAvatar(
+                                    backgroundColor: Colors.blue,
+                                    maxRadius: 15.0,
+                                    child: Icon(
+                                      Icons.home,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Text('Vouchers')
+                                ],
+                              )
+                            ],
+                          ),
+                        ))),
+              ))
+        ],
+      ),
+    ));
+  }
+
+  Widget _buildSlider() {
+    return Stack(children: <Widget>[
+      ClipPath(
+        clipper: WaveClipper2(),
+        child: Container(
+          child: Column(),
+          width: double.infinity,
+          height: 200,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  colors: [Color(0x22ff3a5a), Color(0x22fe494d)])),
+        ),
+      ),
+      ClipPath(
+        clipper: WaveClipper3(),
+        child: Container(
+          child: Column(),
+          width: double.infinity,
+          height: 200,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+            Color(0x44ff3a5a),
+            Color(0x44fe494d)
+          ])), //Color(0x44ff3a5a), Color(0x44fe494d)
+        ),
+      ),
+      ClipPath(
+        clipper: WaveClipper1(),
+        child: Container(
+          child: Row(),
+          width: double.infinity,
+          height: 200,
+          decoration: BoxDecoration(
+              gradient:
+                  LinearGradient(colors: [AppColor.orange, AppColor.orange])),
+        ),
+      ),
+      Container(
+        margin: EdgeInsets.only(top: 10),
+        height: 240,
+        // color: Colors.grey.shade800,
+        padding: EdgeInsets.all(16.0),
+        child: Swiper(
+          fade: 0.0,
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  image: DecorationImage(
+                      image: NetworkImage(images[index]), fit: BoxFit.cover)),
+            );
+          },
+          itemCount: 5,
+          scale: 0.9,
+          pagination: SwiperPagination(),
+        ),
+      )
+    ]);
+  }
+
+  Widget _buildCategories() {
+    return Container(
+      height: 90.0,
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  maxRadius: 30.0,
+                  child: Icon(
+                    Icons.home,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                Text('DarazMall')
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  maxRadius: 30.0,
+                  child: Icon(
+                    Icons.home,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                Text('Flash Sales')
+              ],
+            ),
+            Column(
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundColor: Colors.blue,
+                  maxRadius: 30.0,
+                  child: Icon(
+                    Icons.home,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                Text('Vouchers')
+              ],
+            )
+          ]),
+    );
+  }
+
+  Expanded _buildFlashSaleItem(int index) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.all(5.0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 80,
+              // color: Colors.blue,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: NetworkImage(flashSaleImages[index]),
+                      fit: BoxFit.cover)),
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Stack(
+              children: <Widget>[
+                ClipPath(
+                  clipper: ShapeBorderClipper(
+                      shape: StadiumBorder(
+                          side: BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: Colors.red))),
+                  child: Container(
+                    height: 20,
+                    color: Colors.red.shade200,
+                  ),
+                ),
+                ClipPath(
+                  clipper: ShapeBorderClipper(
+                      shape: StadiumBorder(
+                          side: BorderSide(
+                              width: 1,
+                              style: BorderStyle.solid,
+                              color: Colors.red))),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 10.0),
+                    height: 20,
+                    width: 70,
+                    color: Colors.red,
+                    child: Text(
+                      '12 Sold',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Text('Rs.275')
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFlashSales() {
+    return Container(
+      height: 200,
+      padding: EdgeInsets.all(10.0),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Text(
+                    'Flash Sales',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  Container(
+                      color: Colors.black,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 2.0, horizontal: 5.0),
+                      child: Text(
+                        '02',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  Container(
+                      color: Colors.black,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 2.0, horizontal: 5.0),
+                      child: Text(
+                        '20',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                  SizedBox(
+                    width: 5.0,
+                  ),
+                  Container(
+                      color: Colors.black,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 2.0, horizontal: 5.0),
+                      child: Text(
+                        '30',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ],
+              ),
+              Text(
+                'SHOP MORE >>',
+                style: TextStyle(color: Colors.red),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            children: <Widget>[
+              _buildFlashSaleItem(0),
+              _buildFlashSaleItem(1),
+              _buildFlashSaleItem(2),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCurrentItems() {
+    return Container(
+      child: Column(children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 10,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Text('Currently Watched Items',
+                  style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700)),
+              Spacer(),
+              Builder(
+                  builder: (BuildContext context) => Text(
+                        'View All',
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).primaryColor),
+                      ))
+            ],
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        Container(
+          height: 210,
+          child:
+              ListView(scrollDirection: Axis.horizontal, children: cityCards),
+        ),
+      ]),
+    );
+  }
+
+  Widget _buildJustForYou() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                PNetworkImage(images[0]),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  'Top Quality fashion item',
+                  softWrap: true,
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  'Rs.1,254',
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red),
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 10.0,
+          ),
+          Expanded(
+            child: Column(
+              children: <Widget>[
+                PNetworkImage(images[1]),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  'Top Quality fashion item',
+                  softWrap: true,
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  'Rs.1,254',
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildContent() {
@@ -86,210 +525,33 @@ class _HomePageState extends State<HomePage>
       children: <Widget>[
         SingleChildScrollView(
           controller: _scrollController,
-          child: Column(
-            children: <Widget>[
-              // const SizedBox(height: 30.0),
-              // Container(
-              //   padding: const EdgeInsets.only(left: 16.0, right: 50),
-              //   height: 190,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.only(bottomLeft:  Radius.circular(30.0), bottomRight: Radius.circular(30.0)),
-              //     color: AppColor.blue,
-              //   ),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: <Widget>[
-              //       const SizedBox(height: 70),
-              //       Text(
-              //         'Awesome and simple app bar hiding animation',
-              //         style: TextStyle(
-              //             fontWeight: FontWeight.bold, fontSize: 24.0, color: Colors.white),
-              //       ),
-              //       const SizedBox(height: 20.0),
-              //       Text(
-              //         'AWESOME',
-              //         style: TextStyle(
-              //             fontSize: 16.0,
-              //             fontWeight: FontWeight.bold,
-              //             color: Colors.white),
-              //       )
-              //     ],
-              //   ),
-              // ),
-              Stack(children: <Widget>[
-                ClipPath(
-                  clipper: WaveClipper2(),
-                  child: Container(
-                    child: Column(),
-                    width: double.infinity,
-                    height: 300,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Color(0x22ff3a5a), Color(0x22fe494d)])),
-                  ),
+          child: Container(
+            color: Colors.white,
+            child: Column(
+              children: <Widget>[
+                _buildSlider(),
+                const SizedBox(
+                  height: 10,
                 ),
-                ClipPath(
-                  clipper: WaveClipper3(),
-                  child: Container(
-                    child: Column(),
-                    width: double.infinity,
-                    height: 300,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Color(0x44ff3a5a), Color(0x44fe494d)])),
-                  ),
-                ),
-                ClipPath(
-                  clipper: WaveClipper1(),
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Welcome', style: TextStyle(fontSize: 18, color: Colors.white)),
-                              Text('How are you today?', style: TextStyle(fontSize: 18, color: Colors.white))
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.notifications),
-                          color: Colors.white,
-                          onPressed: (){
-
-                          },
-                        ),
-                      ],
-                    ),
-                    width: double.infinity,
-                    height: 300,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Color(0xffff3a5a), Color(0xfffe494d)])),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 100),
-                  height: 240,
-                  // color: Colors.grey.shade800,
-                  padding: EdgeInsets.all(16.0),
-                  child: Swiper(
-                    fade: 0.0,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        height: 200,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            image: DecorationImage(
-                                image: NetworkImage(images[index]),
-                                fit: BoxFit.cover)),
-                      );
-                    },
-                    itemCount: 5,
-                    scale: 0.9,
-                    pagination: SwiperPagination(),
-                  ),
-                )
-              ]),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    InkWell(
-                        onTap: () {
-                          setState(() {
-                            isflightSelected = true;
-                          });
-                        },
-                        child: ChoiceChip2(
-                            Icons.flight_takeoff, 'Flights', isflightSelected)),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    InkWell(
-                        onTap: () {
-                          setState(() {
-                            isflightSelected = false;
-                          });
-                        },
-                        child: ChoiceChip2(
-                            Icons.hotel, 'Hotel', !isflightSelected)),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Text('Currently Watched Items',
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700)),
-                    Spacer(),
-                    Builder(
-                        builder: (BuildContext context) => Text(
-                              'View All',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Theme.of(context).primaryColor),
-                            ))
-                  ],
-                ),
-              ),
-              Container(
-                height: 210,
-                child: ListView(
-                    scrollDirection: Axis.horizontal, children: cityCards),
-              ),
-              const SizedBox(height: 10.0),
-            ],
+                _buildCategories(),
+                const SizedBox(height: 10.0),
+                _buildFlashSales(),
+                // const SizedBox(height: 10.0),
+                _buildCurrentItems(),
+                const SizedBox(height: 10.0),
+                Center(
+                    child: Text(
+                  'Just for You',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+                )),
+                const SizedBox(height: 10.0),
+                _buildJustForYou(),
+                const SizedBox(height: 10.0),
+              ],
+            ),
           ),
         ),
-        Positioned(
-            top: topPosition,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: 80,
-              padding: const EdgeInsets.only(left: 50, top: 25.0, right: 20.0),
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(30.0),
-                    bottomRight: Radius.circular(30.0)),
-                color: AppColor.blue.withOpacity(_getOpacity()), // Colors.white
-              ),
-              child: DefaultTextStyle(
-                style: TextStyle(),
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
-                child: Semantics(
-                  child: Text(
-                    'Awesome and simple app bar hiding animation',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  header: true,
-                ),
-              ),
-            )),
+        Positioned(top: topPosition, left: 0, right: 0, child: _buildHeader()),
         SizedBox(
           height: 80,
           child: AppBar(
@@ -315,20 +577,28 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    Widget appBar = Container(
-      height: kToolbarHeight + MediaQuery.of(context).padding.top,
+    final Widget appBar = Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text('Welcome',
+                  style: TextStyle(fontSize: 18, color: Colors.white)),
+              Text('How are you today?',
+                  style: TextStyle(fontSize: 18, color: Colors.white))
+            ],
+          ),
           IconButton(
-              onPressed: () => Navigator.of(context).push<dynamic>(
-                  MaterialPageRoute<dynamic>(
-                      builder: (_) => NotificationsPage())),
-              icon: Icon(Icons.notifications)),
-          IconButton(
-              onPressed: () => Navigator.of(context).push<dynamic>(
-                  MaterialPageRoute<dynamic>(builder: (_) => SearchPage())),
-              icon: SvgPicture.asset('assets/icons/search_icon.svg'))
+            icon: Icon(Icons.notifications),
+            color: Colors.white,
+            onPressed: () => Navigator.of(context).push<dynamic>(
+                MaterialPageRoute<dynamic>(
+                    builder: (_) => NotificationsPage())),
+          ),
         ],
       ),
     );
@@ -339,27 +609,13 @@ class _HomePageState extends State<HomePage>
     ));
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xffff3a5a),
+        title: appBar,
+        elevation: 0,
+      ),
       // backgroundColor: AppColor.blue,
-      bottomNavigationBar: CustomBottomBar(controller: bottomTabController),
-      body: TabBarView(controller: bottomTabController, children: <Widget>[
-        SafeArea(child: _buildContent()
-            // child: NestedScrollView(
-            //   headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            //     return <Widget>[
-            //       SliverToBoxAdapter(
-            //         child: appBar,
-            //       ),
-            //     ];
-            //   },
-            //   body: Container(
-            //     child: Center(child: Text('home page')),
-            //   ),
-            //)
-            ),
-        CategoryListPage(),
-        CheckOutPage(),
-        SettingsPage()
-      ]),
+      body: SafeArea(child: _buildContent()),
     );
   }
 }
