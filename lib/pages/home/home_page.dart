@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter_template/data/constants/assets.dart' as assets;
-import 'package:flutter_template/widgets/common/network_image.dart';
-import 'package:flutter_template/widgets/common/wave_clipper.dart';
 
 import '../../data/constants/colors.dart';
 import '../../pages/notification/notifications_page.dart';
+import '../../pages/product/product_detail_page.dart';
+import '../../widgets/common/network_image.dart';
+import '../../widgets/common/wave_clipper.dart';
 import '../../widgets/viewmodels/city_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -85,7 +86,8 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget _buildHeader() {
-    return Center(
+    return Opacity(
+      opacity: _getOpacity(),
         child: Container(
       height: heightHeader,
       child: Stack(
@@ -98,7 +100,7 @@ class _HomePageState extends State<HomePage>
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30.0),
                   bottomRight: Radius.circular(30.0)),
-              color: AppColor.orange.withOpacity(_getOpacity()), // Colors.white
+              color: AppColor.orange, //.withOpacity(_getOpacity())
             ),
             child: Column(),
           ),
@@ -293,61 +295,67 @@ class _HomePageState extends State<HomePage>
 
   Expanded _buildFlashSaleItem(int index) {
     return Expanded(
-      child: Container(
-        padding: EdgeInsets.all(5.0),
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 80,
-              // color: Colors.blue,
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(flashSaleImages[index]),
-                      fit: BoxFit.cover)),
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Stack(
-              children: <Widget>[
-                ClipPath(
-                  clipper: ShapeBorderClipper(
-                      shape: StadiumBorder(
-                          side: BorderSide(
-                              width: 1,
-                              style: BorderStyle.solid,
-                              color: Colors.red))),
-                  child: Container(
-                    height: 20,
-                    color: Colors.red.shade200,
-                  ),
-                ),
-                ClipPath(
-                  clipper: ShapeBorderClipper(
-                      shape: StadiumBorder(
-                          side: BorderSide(
-                              width: 1,
-                              style: BorderStyle.solid,
-                              color: Colors.red))),
-                  child: Container(
-                    padding: EdgeInsets.only(left: 10.0),
-                    height: 20,
-                    width: 70,
-                    color: Colors.red,
-                    child: Text(
-                      '12 Sold',
-                      style: TextStyle(color: Colors.white),
+      child: InkWell(
+        child: Container(
+          padding: EdgeInsets.all(5.0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 80,
+                // color: Colors.blue,
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(flashSaleImages[index]),
+                        fit: BoxFit.cover)),
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Stack(
+                children: <Widget>[
+                  ClipPath(
+                    clipper: ShapeBorderClipper(
+                        shape: StadiumBorder(
+                            side: BorderSide(
+                                width: 1,
+                                style: BorderStyle.solid,
+                                color: Colors.red))),
+                    child: Container(
+                      height: 20,
+                      color: Colors.red.shade200,
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 5.0,
-            ),
-            Text('Rs.275')
-          ],
+                  ClipPath(
+                    clipper: ShapeBorderClipper(
+                        shape: StadiumBorder(
+                            side: BorderSide(
+                                width: 1,
+                                style: BorderStyle.solid,
+                                color: Colors.red))),
+                    child: Container(
+                      padding: EdgeInsets.only(left: 10.0),
+                      height: 20,
+                      width: 70,
+                      color: Colors.red,
+                      child: Text(
+                        '12 Sold',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 5.0,
+              ),
+              Text('Rs.275')
+            ],
+          ),
         ),
+        onTap: (){
+          Navigator.of(context).push<dynamic>(
+                        MaterialPageRoute<dynamic>(builder: (_) => ProductDetailsPage()));
+        },
       ),
     );
   }
@@ -465,28 +473,34 @@ class _HomePageState extends State<HomePage>
       child: Row(
         children: <Widget>[
           Expanded(
-            child: Column(
-              children: <Widget>[
-                PNetworkImage(images[0]),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  'Top Quality fashion item',
-                  softWrap: true,
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  'Rs.1,254',
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red),
-                )
-              ],
-            ),
+            child: InkWell(
+              child: Column(
+                children: <Widget>[
+                  PNetworkImage(images[0]),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    'Top Quality fashion item',
+                    softWrap: true,
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    'Rs.1,254',
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red),
+                  )
+                ],
+              ),
+              onTap: (){
+                // Navigator.of(context).push<dynamic>(
+                //         MaterialPageRoute<dynamic>(builder: (_) => HotelPage()));
+              },
+            )
           ),
           SizedBox(
             width: 10.0,

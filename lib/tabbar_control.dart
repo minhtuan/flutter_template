@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_template/pages/product/hotel_page.dart';
 
 import 'localization/app_translations.dart';
-import 'pages/category/category_list_page.dart';
 import 'pages/home/home_page.dart';
 import 'pages/settings/settings_page.dart';
 import 'pages/shop/check_out_page.dart';
@@ -18,7 +18,7 @@ class TabBarControlState extends State<TabBarControl>{
   int _currentIndex = 0;
   final List<Widget> _children = [
     HomePage(),
-    CategoryListPage(),
+    HotelPage(),
     CheckOutPage(),
     SettingsPage(),
   ];
@@ -51,7 +51,7 @@ class TabBarControlState extends State<TabBarControl>{
             ),
             BottomNavigationBarItem(
               icon: _currentIndex == 1? Image.asset('assets/icons/category_icon.png'): Image.asset('assets/icons/category_icon.png'),
-              title: Text(AppTranslations.of(context).text('Category')),
+              title: Text(AppTranslations.of(context).text('Hotel')),
             ),
             BottomNavigationBarItem(
               icon: _currentIndex == 2? SvgPicture.asset('assets/icons/cart_icon.svg'): SvgPicture.asset('assets/icons/cart_icon.svg'),
